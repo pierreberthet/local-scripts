@@ -109,7 +109,7 @@ pl.ylabel('Membrane potential [mV]')
 pl.xlabel('time [ms]')
 pl.axis(ax)
 pl.suptitle(str(100*spread)+' % variation of '+key_a +' default value = '+str(default_a) +'and '+ key_b + ' default value = '+str(default_b))
-#pl.legend()
+pl.legend()
 pl.show()
 
 nest.raster_plot.from_device(recorder, hist=True)
