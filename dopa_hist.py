@@ -15,7 +15,7 @@ data = np.loadtxt(params['spiketimes_folder']+cell+'_merged_'+recorder_type+'.da
 outcome = np.loadtxt(params['rewards_multi_fn']+'_0')
 
 
-spread = 4
+spread = 6
 x = len(outcome) * spread 
 tempd =np.sort(data[:,1])[params['t_init']:] 
 
