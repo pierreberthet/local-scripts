@@ -16,6 +16,7 @@ pp.pprint(params)
 
 params['figures_folder'] = "%sFigures" % params['folder_name']
 color = ['b','g', 'r', 'c', 'm', 'y', 'k']
+color = ['b','y', 'k', 'g', 'r', 'm', 'c']
 z = 0
 cl = color[z%len(color)]
 
@@ -31,6 +32,8 @@ recorder_type = 'spikes'
 
 mean = 0
 
+print cell
+
 for nstate in range(params['n_states']):
     #    print nstate
     data = np.loadtxt(params['spiketimes_folder']+'/'+str(nstate)+cell+'_merged_'+recorder_type+'.dat' )
@@ -44,6 +47,7 @@ pl.text(xa, mean, cell, color=cl)
 z += 1
 cl = color[z%len(color)]
 cell = 'rp'
+print cell
 for ni in range(params['n_states']*params['n_actions']):
     #    print nstate
     data = np.loadtxt(params['spiketimes_folder']+str(ni)+cell+'_merged_'+recorder_type+'.dat' )
@@ -63,6 +67,7 @@ cl = color[z%len(color)]
 
 
 cell = 'rew'
+print cell
 data = np.loadtxt(params['spiketimes_folder']+cell+'_merged_'+recorder_type+'.dat' )
 if len(data)<2:
     print 'no data in ', cell
@@ -79,10 +84,11 @@ else:
 
 
 cell_types = ['d1', 'd2', 'actions','efference', 'brainstem']
-cell_types = ['d1', 'd2', 'actions','efference']
+#cell_types = ['d1', 'd2', 'actions','efference']
 
 # SPIKES
 for cell in cell_types:
+    print cell
     for naction in range(params['n_actions']):
         data = np.loadtxt(params['spiketimes_folder']+str(naction)+cell+'_merged_'+recorder_type+'.dat' )
         if len(data)<2:

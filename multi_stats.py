@@ -62,8 +62,8 @@ for i in xrange(lenrp):
 #wd2 = wd2 / params['multi_n']
 #rewards = rewards / params['multi_n']
 
-mini = np.minimum(np.min(wd1_m - wd1_std), np.min(wd2_m - wd2_std)) - .2
-maxi = np.maximum(np.max(wd1_m + wd1_std), np.max(wd2_m + wd2_std)) + .2
+mini = np.minimum(np.min(wd1_m - wd1_std), np.min(wd2_m - wd2_std)) - .1
+maxi = np.maximum(np.max(wd1_m + wd1_std), np.max(wd2_m + wd2_std)) + .1
 print 'd1 data' 
 
 pl.figure(600)
@@ -75,11 +75,13 @@ for i in xrange(params['n_actions']):
     z+=1
     cl = color[z%len(color)]
     
+xmax= params['n_recordings']
 mean = np.zeros(lend1)
 for j in xrange(lend1):
     mean[j] = np.mean(wd1_m[j,:])
 pl.plot(mean, 'k.')
 pl.ylim([mini, maxi])
+pl.xlim([0., xmax])
 pl.ylabel(r'$W_{ij}$')
 #pl.vlines( np.arange(0,params['t_sim']/params['resolution'], params['t_sim']/(params['n_blocks']*params['resolution'])), [0], [1.01], color='0.55', linestyles='dashed' )
 if params['n_blocks']>1:
@@ -100,8 +102,10 @@ for j in xrange(lend2):
     mean[j] = np.mean(wd2_m[j,:])
 pl.plot(mean, 'k.')
 pl.ylim([mini, maxi])
+pl.xlim([0., xmax])
+#pl.xlim([0, maxi])
 pl.ylabel(r'$W_{ij}$')
-pl.xlabel(r'$time$ in '+str(params['resolution'])+' ms')
+pl.xlabel('time in '+str(params['resolution'])+r' $ms$')
 #pl.vlines( np.arange(0,params['t_sim']/params['resolution'], params['t_sim']/(params['n_blocks']*params['resolution'])), [0], [1.01], color='0.55', linestyles='dashed' )
 if params['n_blocks']>1:
     pl.vlines( np.arange(lend2/params['n_blocks'], lend2-1., lend2/params['n_blocks'] ), [mini], [maxi], color='0.55', linestyles='dashed' )
@@ -111,17 +115,21 @@ pl.figure(601)
 z=0
 mean = np.zeros(lenrp)
 cl = color[z%len(color)]
-pl.xlabel(r'$time$ in '+str(params['resolution'])+' ms')
+pl.xlabel('time in '+str(params['resolution'])+r' $ms$')
 pl.ylabel('average RP weights')
 for i in xrange(params['n_actions']*params['n_states']):
     pl.plot(wrp_m[:,i], c=cl)
     pl.fill_between(np.arange(lenrp), wrp_m[:,i] + wrp_std[:,i], wrp_m[:,i] - wrp_std[:,i], alpha =.5, facecolor=cl )
     z+=1
     cl = color[z%len(color)]
+mini = np.min(wrp_m - wrp_std)
+maxi = np.max(wrp_m + wrp_std)
 if params['n_blocks']>1:
-    pl.vlines( np.arange(lenrp/params['n_blocks'], lenrp-1., lenrp/params['n_blocks'] ), -.2, .2, color='0.55', linestyles='dashed' )
+    pl.vlines( np.arange(lenrp/params['n_blocks'], lenrp-1., lenrp/params['n_blocks'] ), mini, maxi, color='0.55', linestyles='dashed' )
 for j in xrange(lenrp):
     mean[j] = np.mean(wrp_m[j,:])
+pl.ylim([mini, maxi])
+pl.xlim([0., xmax])
 pl.plot(mean, 'k.')
 
 
@@ -140,7 +148,16 @@ pl.ylabel('average success ratio')
 if params['n_blocks']>1:
     pl.vlines( np.arange(params['block_len'],params['n_blocks']*params['block_len']-1., params['block_len']), [0], [1.05], color='0.55', linestyles='dashed' )
 pl.plot(rewards_m)
-pl.fill_between(np.arange(params['n_iterations']), rewards_m +rewards_std, rewards_m - rewards_std, alpha=.2)
+
+top = np.ones(len(rewards_m))
+down = np.zeros(len(rewards_m))
+for i in xrange(len(rewards_m)):
+    if (rewards_m[i]+rewards_std[i]<1.):
+        top[i]=rewards_m[i]+rewards_std[i]
+    if (rewards_m[i]-rewards_std[i]>0.):
+        down[i]=rewards_m[i]-rewards_std[i]
+
+pl.fill_between(np.arange(params['n_iterations']), top,down, alpha=.2)
 pl.ylim([0, 1.05])
 
 

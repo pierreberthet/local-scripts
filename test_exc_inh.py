@@ -3,13 +3,16 @@ import numpy as np
 import matplotlib
 import pylab as pl
 
+if (not 'bcpnn_dopamine_synapse' in nest.Models()):
+    nest.Install('ml_module')
+
 
 nest.ResetKernel()
 nest.SetKernelStatus({"overwrite_files": True})
 
 exc = nest.Create('iaf_cond_alpha',1)
 inh = nest.Create('iaf_cond_alpha',1)
-tgt = nest.Create('iaf_cond_alpha',1)
+tgt = nest.Create('iaf_cond_alpha_bias',1)
 
 poisson = nest.Create('poisson_generator',1)
 noise   = nest.Create('poisson_generator',1)
@@ -37,11 +40,23 @@ rate_poisson = 4000.
 rate_noise = 2000.
 
 
-nest.Connect(exc, tgt, 'one_to_one', {'weight':w_exc, 'delay':1.})
-nest.Connect(inh, tgt, 'one_to_one', {'weight':w_inh, 'delay':1.})
-nest.Connect(noise, tgt, 'one_to_one', {'weight':w_noise, 'delay':1.})
-nest.Connect(poisson, exc, 'one_to_one', {'weight':w_poisson, 'delay':1.})
-nest.Connect(poisson, inh, 'one_to_one', {'weight':w_poisson, 'delay':1.})
+#nest.Connect(exc, tgt, 'one_to_one', {'weight':w_exc, 'delay':1.})
+#nest.Connect(inh, tgt, 'one_to_one', {'weight':w_inh, 'delay':1.})
+#nest.Connect(noise, tgt, 'one_to_one', {'weight':w_noise, 'delay':1.})
+#nest.Connect(poisson, exc, 'one_to_one', {'weight':w_poisson, 'delay':1.})
+#nest.Connect(poisson, inh, 'one_to_one', {'weight':w_poisson, 'delay':1.})
+nest.Connect(exc, tgt, 'one_to_one', params={'weight':w_exc, 'delay':1.})
+nest.Connect(inh, tgt, 'one_to_one', params={'weight':w_inh, 'delay':1.})
+nest.Connect(noise, tgt, 'one_to_one', params={'weight':w_noise, 'delay':1.})
+nest.Connect(poisson, exc, 'one_to_one', params={'weight':w_poisson, 'delay':1.})
+nest.Connect(poisson, inh, 'one_to_one', params={'weight':w_poisson, 'delay':1.})
+
+#nest.Connect(exc, tgt, 'one_to_one', weight=w_exc, delay=1.)
+#nest.Connect(inh, tgt, 'one_to_one', weight=w_inh, delay=1.)
+#nest.Connect(noise, tgt, 'one_to_one', weight=w_noise, delay=1.)
+#nest.Connect(poisson, exc, 'one_to_one', weight=w_poisson, delay=1.)
+#nest.Connect(poisson, inh, 'one_to_one', weight=w_poisson, delay=1.)
+
 
 nest.SetStatus(noise, {'rate':rate_noise})
 
