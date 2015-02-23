@@ -123,9 +123,10 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['Vreset_std'] = 1. #0.01 #2.
         
         ########### SIMULATION PARAMETERS
-        self.params['trigger']= True
-        self.params['block_trigger'] = 10
-        self.params['value_trigg'] = 30. #percentage of dopamine neurons silenced by the disease
+        self.params['trigger']= False
+        self.params['block_trigger'] = 10  #10
+        self.params['value_trigg_dopa_death'] = 30. #percentage of dopamine neurons silenced by the disease
+        self.params['value_trigg_bias'] = .05 #percentage of dopamine neurons silenced by the disease
         self.params['new_value_2'] = 2450.
        # self.params['active_poisson_rew_rate'] = 2700.
        # self.params['baseline_poisson_rew_rate'] = 2500.
@@ -157,8 +158,8 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['num_actions_output'] = 10
         self.params['param_bg_output'] = {'V_reset': self.params['Vreset']} # to adapt parms to aif_cond_alpha neuron model
         
-        self.params['str_to_output_exc_w'] = 10. # 4.             ### D2
-        self.params['str_to_output_inh_w'] = -2 # -1.   #-1.     ### D1
+        self.params['str_to_output_exc_w'] = 20 #10. # 4.             ### D2
+        self.params['str_to_output_inh_w'] = -4 # -1.   #-1.     ### D1
         self.params['str_to_output_exc_delay'] = 2. 
         self.params['str_to_output_inh_delay'] = 2.
         self.params['std_str_to_output_exc_w'] = .2             ### D2
@@ -266,17 +267,19 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['params_lateral_synapse_d1'] = {}
         self.params['params_lateral_synapse_d2'] = {}
 
-        #self.params['inhib_lateral_weights_d2_d1'] = -1. #-4.
         self.params['inhib_lateral_weights_d1'] = -1. #-4.
         self.params['inhib_lateral_weights_d2'] = -1. #-4.
         self.params['inhib_lateral_delay_d1'] = 1.
         self.params['inhib_lateral_delay_d2'] = 1.
+        self.params['inhib_lateral_weights_d2_d1'] = 0. #-1. #-4.
         self.params['std_inhib_lateral_weights_d1'] = .1 #-4.
         self.params['std_inhib_lateral_weights_d2'] = .1 #-4.
         self.params['std_inhib_lateral_delay_d1'] = .1
         self.params['std_inhib_lateral_delay_d2'] = .1
+        self.params['std_inhib_lateral_weights_d2_d1'] = .0001 #-4.
         self.params['ratio_lat_inh_d1_d1'] = 2.   # ratio of D1 MSNs belonging to the other actions inhibited by one D1 MSN from a specific action  
         self.params['ratio_lat_inh_d2_d2'] = 2.   # ratio of D1 MSNs belonging to the other actions inhibited by one D1 MSN from a specific action
+        self.params['ratio_lat_inh_d2_d1'] = 2.   # ratio of D1 MSNs belonging to the other actions inhibited by one D1 MSN from a specific action
         # during learning gain == 0. K = 1.0 : --> 'offline' learning
         # after learning: gain == 1. K = .0
 
