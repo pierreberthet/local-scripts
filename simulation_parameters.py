@@ -102,12 +102,12 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['gain'] = 6. #3.5 #2.5 ##1.9   #3.
         self.params['gain_d1'] = 6. #3.5 # 1. ##1.9   #3.
         self.params['gain_d2'] = 6.  #3.5 # 1. ##1.9   #3.
-        self.params['gain_rp'] = -2.   # -3.
-        self.params['gain_dopa'] = 7.  #6.   #4.
+        self.params['gain_rp'] = -5.   # -4.
+        self.params['gain_dopa'] = 6.  #6.   #4.
         self.params['gain_neuron'] = 20.       #gain for the neuron model has different impact (amplifies current injected) than gain in synapse model (amplifies weights)
         self.params['K'] = 0.
         self.params['fmax'] = 40. #100.  #70
-        self.params['rp_fmax'] = 40.   # 
+        self.params['rp_fmax'] = 15.   # 20
         self.params['rpe'] = 0.01
         self.params['positive_prior'] = .01
 
@@ -123,7 +123,7 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['Vreset_std'] = 1. #0.01 #2.
         
         ########### SIMULATION PARAMETERS
-        self.params['trigger']= False
+        self.params['trigger']= True
         self.params['block_trigger'] = 10  #10
         self.params['value_trigg_dopa_death'] = 30. #percentage of dopamine neurons silenced by the disease
         self.params['value_trigg_bias'] = .05 #percentage of dopamine neurons silenced by the disease
@@ -397,8 +397,8 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['num_neuron_states'] = 30
         self.params['param_states_pop'] = {} 
 
-        self.params['weight_states_rp']    = 5.  #3.
-        self.params['weight_efference_rp'] = 5.
+        self.params['weight_states_rp']    = 4.5  #3.
+        self.params['weight_efference_rp'] = 4.5
         self.params['delay_states_rp']    =  self.params['t_efference']
         self.params['delay_efference_rp'] =  self.params['t_efference']
         self.params['std_weight_states_rp']    = .5  
@@ -483,7 +483,7 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['params_dopa_bcpnn_RP']['tau_p']= 2000.
         self.params['params_dopa_bcpnn_RP']['tau_n']= 100.
         self.params['params_dopa_bcpnn_RP']['fmax']= self.params['rp_fmax']
-        self.params['params_dopa_bcpnn_RP']['gain_dopa']= 1.
+        self.params['params_dopa_bcpnn_RP']['gain_dopa']= 2. #1.
         self.params['params_dopa_bcpnn_RP']['gain']= self.params['gain_rp']
 
         if not self.params['params_dopa_bcpnn_RP']['dopamine_modulated']:

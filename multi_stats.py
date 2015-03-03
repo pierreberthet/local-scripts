@@ -4,18 +4,25 @@ import matplotlib
 #matplotlib.use('Agg')
 import pylab as pl
 import pprint as pp
+import sys
 # Plot the different figures for the merged spikes and voltages recordings.
 # This file, as the MergeSpikefiles.py should be one level up than Test/..., the output of a simulation.
-fparam = 'Test/Parameters/simulation_parameters.json'
+
+path = sys.argv[1]+'/'
+
+fparam = path+'Test/Parameters/simulation_parameters.json'
+#print fparam
 f = open(fparam, 'r')
 params = json.load(f)
 
+
+
 params['multi_n']+=1
 
-source_d1 = params['weights_d1_multi_fn']+'_'
-source_d2 = params['weights_d2_multi_fn']+'_'
-source_rew = params['rewards_multi_fn']+'_'
-source_rp = params['weights_rp_multi_fn']+'_'
+source_d1 =    path+ params['weights_d1_multi_fn']+'_'
+source_d2 =    path+ params['weights_d2_multi_fn']+'_'
+source_rew =   path+ params['rewards_multi_fn']+'_'
+source_rp =    path+ params['weights_rp_multi_fn']+'_'
 print 'init phase'
 color = ['b','g', 'r', 'c', 'm', 'y', 'k']
 z = 0
@@ -67,7 +74,7 @@ maxi = np.maximum(np.max(wd1_m + wd1_std), np.max(wd2_m + wd2_std)) + .1
 print 'd1 data' 
 
 pl.figure(600)
-pl.subplot(211)
+ax = pl.subplot(211)
 pl.title('D1')
 for i in xrange(params['n_actions']):
     pl.plot(wd1_m[:,i], c=cl)
@@ -75,6 +82,16 @@ for i in xrange(params['n_actions']):
     z+=1
     cl = color[z%len(color)]
     
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.get_xaxis().tick_bottom()
+ax.get_yaxis().tick_left()
+ax.tick_params(axis='x', direction='out')
+ax.tick_params(axis='y', length=0)
+ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
+ax.set_axisbelow(True)
+
 xmax= params['n_recordings']
 mean = np.zeros(lend1)
 for j in xrange(lend1):
@@ -82,7 +99,8 @@ for j in xrange(lend1):
 pl.plot(mean, 'k.')
 pl.ylim([mini, maxi])
 pl.xlim([0., xmax])
-pl.ylabel(r'$W_{ij}$')
+pl.ylabel('average 'r'$W_{1j}$')
+#pl.ylabel(r'$W_{ij}$')
 #pl.vlines( np.arange(0,params['t_sim']/params['resolution'], params['t_sim']/(params['n_blocks']*params['resolution'])), [0], [1.01], color='0.55', linestyles='dashed' )
 if params['n_blocks']>1:
     pl.vlines( np.arange(lend1/params['n_blocks'], lend1-1., lend1/params['n_blocks'] ), [mini], [maxi], color='0.55', linestyles='dashed' )
@@ -90,7 +108,7 @@ if params['n_blocks']>1:
 z=0
 cl = color[z%len(color)]
 print 'd2 data' 
-pl.subplot(212)
+ax =pl.subplot(212)
 mean = np.zeros(lend2)
 pl.title('D2')
 for i in xrange(params['n_actions']):
@@ -100,38 +118,69 @@ for i in xrange(params['n_actions']):
     cl = color[z%len(color)]
 for j in xrange(lend2):
     mean[j] = np.mean(wd2_m[j,:])
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.get_xaxis().tick_bottom()
+ax.get_yaxis().tick_left()
+ax.tick_params(axis='x', direction='out')
+ax.tick_params(axis='y', length=0)
+ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
+ax.set_axisbelow(True)
 pl.plot(mean, 'k.')
 pl.ylim([mini, maxi])
 pl.xlim([0., xmax])
 #pl.xlim([0, maxi])
-pl.ylabel(r'$W_{ij}$')
+pl.ylabel('average 'r'$W_{1j}$')
 pl.xlabel('time in '+str(params['resolution'])+r' $ms$')
+pl.xlabel(r'time in $ms$')
+pl.xticks(np.arange(0, params['n_iterations'], params['block_len']))
 #pl.vlines( np.arange(0,params['t_sim']/params['resolution'], params['t_sim']/(params['n_blocks']*params['resolution'])), [0], [1.01], color='0.55', linestyles='dashed' )
 if params['n_blocks']>1:
     pl.vlines( np.arange(lend2/params['n_blocks'], lend2-1., lend2/params['n_blocks'] ), [mini], [maxi], color='0.55', linestyles='dashed' )
 
+pl.savefig('d1d2weight.tiff', bbox_inches='tight', dpi=600)
+pl.savefig('d1d2weight.pdf', bbox_inches='tight', dpi=600)
+pl.savefig('d1d2weight.svg', bbox_inches='tight', dpi=600)
+
 print 'rp data' 
-pl.figure(601)
+fig = pl.figure(601)
+ax=fig.add_subplot(111)
 z=0
 mean = np.zeros(lenrp)
 cl = color[z%len(color)]
 pl.xlabel('time in '+str(params['resolution'])+r' $ms$')
-pl.ylabel('average RP weights')
+pl.xlabel(r'time in $ms$')
+pl.xticks(np.arange(0,params['t_sim'], params['resolution']))
+#pl.ylabel('average RP weights')
+pl.ylabel('RP average 'r'$W_{ij}$')
 for i in xrange(params['n_actions']*params['n_states']):
-    pl.plot(wrp_m[:,i], c=cl)
-    pl.fill_between(np.arange(lenrp), wrp_m[:,i] + wrp_std[:,i], wrp_m[:,i] - wrp_std[:,i], alpha =.5, facecolor=cl )
+    ax.plot(wrp_m[:,i], c=cl)
+    ax.fill_between(np.arange(lenrp), wrp_m[:,i] + wrp_std[:,i], wrp_m[:,i] - wrp_std[:,i], alpha =.5, facecolor=cl )
     z+=1
     cl = color[z%len(color)]
 mini = np.min(wrp_m - wrp_std)
 maxi = np.max(wrp_m + wrp_std)
 if params['n_blocks']>1:
-    pl.vlines( np.arange(lenrp/params['n_blocks'], lenrp-1., lenrp/params['n_blocks'] ), mini, maxi, color='0.55', linestyles='dashed' )
+    ax.vlines( np.arange(lenrp/params['n_blocks'], lenrp-1., lenrp/params['n_blocks'] ), mini, maxi, color='0.55', linestyles='dashed' )
 for j in xrange(lenrp):
     mean[j] = np.mean(wrp_m[j,:])
 pl.ylim([mini, maxi])
 pl.xlim([0., xmax])
-pl.plot(mean, 'k.')
+ax.plot(mean, 'k.')
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.get_xaxis().tick_bottom()
+ax.get_yaxis().tick_left()
+ax.tick_params(axis='x', direction='out')
+ax.tick_params(axis='y', length=0)
+ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
+ax.set_axisbelow(True)
 
+pl.savefig('rpweight.tiff', bbox_inches='tight', dpi=600)
+pl.savefig('rpweight.pdf', bbox_inches='tight', dpi=600)
+pl.savefig('rpweight.svg', bbox_inches='tight', dpi=600)
 
 perf= np.zeros((params['multi_n'], params['n_iterations']))
 for j in xrange(0, params['multi_n']):
@@ -141,13 +190,14 @@ for m in xrange(params['n_iterations']):
     rewards_m[m] = np.mean(perf[:,m])
     rewards_std[m] = np.std(perf[:,m])
 print 'average perf'
-pl.figure(602)
+fig = pl.figure(602)
 #pl.title('performance')
+ax = fig.add_subplot(111)
 pl.xlabel('trials')
 pl.ylabel('average success ratio')
 if params['n_blocks']>1:
-    pl.vlines( np.arange(params['block_len'],params['n_blocks']*params['block_len']-1., params['block_len']), [0], [1.05], color='0.55', linestyles='dashed' )
-pl.plot(rewards_m)
+    ax.vlines( np.arange(params['block_len'],params['n_blocks']*params['block_len']-1., params['block_len']), [0], [1.0], color='0.55', linestyles='dashed' )
+ax.plot(rewards_m)
 
 top = np.ones(len(rewards_m))
 down = np.zeros(len(rewards_m))
@@ -157,8 +207,20 @@ for i in xrange(len(rewards_m)):
     if (rewards_m[i]-rewards_std[i]>0.):
         down[i]=rewards_m[i]-rewards_std[i]
 
-pl.fill_between(np.arange(params['n_iterations']), top,down, alpha=.2)
-pl.ylim([0, 1.05])
+ax.fill_between(np.arange(params['n_iterations']), top,down, alpha=.2)
+pl.ylim([0, 1.0])
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.get_xaxis().tick_bottom()
+ax.get_yaxis().tick_left()
+ax.tick_params(axis='x', direction='out')
+ax.tick_params(axis='y', length=0)
+ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
+ax.set_axisbelow(True)
+pl.savefig('perf.tiff', bbox_inches='tight', dpi=600)
+pl.savefig('perf.pdf', bbox_inches='tight', dpi=600)
+pl.savefig('perf.svg', bbox_inches='tight', dpi=600)
 
 
 #for i in xrange(params['multi_n']):
@@ -170,9 +232,9 @@ pl.ylim([0, 1.05])
 #    pl.title('D2 run '+str(i))
 #    pl.plot(wd2[i])
 
-pl.figure(330)
-for i in xrange(params['multi_n']):
-    pl.plot(perf[i], label=i)
+#pl.figure(330)
+#for i in xrange(params['multi_n']):
+#    pl.plot(perf[i], label=i)
 pl.show()
 
 

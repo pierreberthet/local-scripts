@@ -9,7 +9,7 @@ import difflib
 #from difflib_data import *
 # Plot the different figures for the merged spikes and voltages recordings.
 # This file, as the MergeSpikefiles.py should be one level up than Test/..., the output of a simulation.
-
+import glob
 import scipy.stats as stats
 
 def get_weights(folder):
@@ -38,6 +38,23 @@ def get_weights(folder):
     #        wrp_std[i,j] = np.std(wrp[:,i,j])
 
     return rewards
+
+def stars(p):
+    if p < 0.0001:
+        return "****"
+    elif (p < 0.001):
+        return "***"
+    elif (p < 0.01):
+        return "**"
+    elif (p < 0.05):
+        return "*"
+    else:
+        return "-"
+
+
+
+
+
 ######################################
 ######################################
 
@@ -93,6 +110,9 @@ for f in xrange(len(fname)):
 
 
 
+fig = pl.figure()
+ax = fig.add_subplot(111)
+ax.hlines(1./3., 0, 8, colors='gray', linestyles='dotted', label='chance')
 print 'PERF'
 for i in xrange(len(fname)):
     print  fname[i], 'mean= ',  np.mean(perf[i]), 'SD=', np.std(perf[i])
@@ -105,4 +125,114 @@ for i in xrange(len(fname)):
     print '+++++++++++++++++++++++++++++++'
 print '\n'
 print '\n'
+
+bp = ax.boxplot([v for v in perf.itervalues()])
+
+
+
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.spines['left'].set_visible(False)
+ax.get_xaxis().tick_bottom()
+ax.get_yaxis().tick_left()
+ax.tick_params(axis='x', direction='out')
+ax.tick_params(axis='y', length=0)
+
+
+ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
+ax.set_axisbelow(True)
+
+
+
+
+# colors, as before
+import brewer2mpl
+bmap = brewer2mpl.get_map('Set2', 'qualitative', len(fname))
+colors = bmap.mpl_colors
+
+for i in range(0, len(bp['boxes'])):
+    bp['boxes'][i].set_color(colors[i])
+    # we have two whiskers!
+    bp['whiskers'][i*2].set_color(colors[i])
+    bp['whiskers'][i*2 + 1].set_color(colors[i])
+    bp['whiskers'][i*2].set_linewidth(2)
+    bp['whiskers'][i*2 + 1].set_linewidth(2)
+    # top and bottom fliers
+    # (set allows us to set many parameters at once)
+    bp['fliers'][i * 2].set(markerfacecolor=colors[i],
+        marker='o', alpha=0.75, markersize=6,
+        markeredgecolor='none')
+    bp['fliers'][i * 2 + 1].set(markerfacecolor=colors[i],
+        marker='o', alpha=0.75, markersize=6,
+        markeredgecolor='none')
+    bp['medians'][i].set_color('black')
+    bp['medians'][i].set_linewidth(3)
+    # and 4 caps to remove
+    for c in bp['caps']:
+        c.set_linewidth(0)
+
+
+for i in range(len(bp['boxes'])):
+    box = bp['boxes'][i]
+    box.set_linewidth(0)
+    boxX = []
+    boxY = []
+    for j in range(5):
+        boxX.append(box.get_xdata()[j])
+        boxY.append(box.get_ydata()[j])
+        boxCoords = zip(boxX,boxY)
+        boxPolygon = pl.Polygon(boxCoords, facecolor = colors[i], linewidth=0)
+        ax.add_patch(boxPolygon)
+
+
+
+#y_max = np.max(np.concatenate((low_mut_100, high_mut_100)))
+#y_min = np.min(np.concatenate((low_mut_100, high_mut_100)))
+#print y_max
+
+y = 0.25
+yA = 1.1
+yB = 0.
+
+ax.annotate("", xy=(5, y), xycoords='data', 
+    xytext=(3, y), textcoords='data',
+    arrowprops=dict(arrowstyle="-", ec='#aaaaaa',
+    connectionstyle="bar,fraction=0.06"))
+ax.text(4., .215, '$ns$',
+    horizontalalignment='center',
+    verticalalignment='center', fontsize='large')
+
+ax.annotate("", xy=(7, .98), xycoords='data', 
+    xytext=(2, .98), textcoords='data',
+    arrowprops=dict(arrowstyle="-", ec='#aaaaaa',
+    connectionstyle="bar,fraction=-0.02"))
+ax.text(4.5, 1.01, '$ns$',
+    horizontalalignment='center',
+    verticalalignment='center', fontsize='large')
+si = 12 
+
+parms = {
+    'axes.labelsize': si,
+    'text.fontsize': si,
+    'legend.fontsize': si,
+    'xtick.labelsize': si,
+    'ytick.labelsize': si,
+    'text.usetex': False,
+    'figure.figsize': [6., 7.]
+}
+pl.rcParams.update(parms)
+                                                                                               
+ax.set_ylim([0.,1.05])
+ax.set_xticklabels(['Full','no\nD1', 'no\nD2', 'no\nRP', 'no\nEfference', 'no\nLI', 'no\nSF'])
+ax.set_ylabel('Average success ratio for the last 5 trials of each block')
+
+pl.savefig('anovatest_.pdf', bbox_inches='tight', dpi=600)
+pl.savefig('anovatest_.eps', bbox_inches='tight', dpi=600)
+pl.savefig('anovatest_.tiff', bbox_inches='tight', dpi=600)
+pl.savefig('anovatest_.png', bbox_inches='tight', dpi=600)
+
+#pl.show()
+
+
+
 
