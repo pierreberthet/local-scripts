@@ -45,7 +45,7 @@ class global_parameters(ParameterContainer.ParameterContainer):
 
 
     def set_dependables(self):
-        self.params['t_iteration'] = self.params['t_selection'] + self.params['t_efference'] + self.params['t_rest'] + self.params['t_reward']  # [ms] stimulus integration time, 
+        self.params['t_iteration'] = self.params['t_selection'] + self.params['t_efference'] + self.params['t_delay'] + self.params['t_reward'] + self.params['t_rest'] # [ms] stimulus integration time, 
         self.params['t_sim'] = self.params['t_init'] + self.params['t_iteration'] * self.params['block_len'] * self.params['n_blocks']          # [ms] total simulation time
         self.params['n_iterations'] = self.params['block_len'] * self.params['n_blocks']  #int(round(2*self.params['t_sim'] / self.params['t_iteration']))
         self.params['n_recordings'] = self.params['t_sim'] / self.params['resolution']
@@ -64,7 +64,7 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['t_efference'] = 250.  # [ms]
         self.params['t_reward']    = 250.  # [ms] 
         self.params['t_rest']      = 500.  # [ms] 
-        self.params['t_delay']     = 0.    # [ms] 
+        self.params['t_delay']     = 0.  # [ms] 
         self.params['t_init']      = 1000. # [ms] 
         # time % (modulo) resolution has to be 0  --> for Figures processing
         self.params['resolution'] = 250.   # [ms]
@@ -125,7 +125,7 @@ class global_parameters(ParameterContainer.ParameterContainer):
         ########### SIMULATION PARAMETERS
         self.params['trigger']= True
         self.params['block_trigger'] = 10  #10
-        self.params['value_trigg_dopa_death'] = 30. #percentage of dopamine neurons silenced by the disease
+        self.params['value_trigg_dopa_death'] = 50. #percentage of dopamine neurons silenced by the disease
         self.params['value_trigg_bias'] = .05 #percentage of dopamine neurons silenced by the disease
         self.params['new_value_2'] = 2450.
        # self.params['active_poisson_rew_rate'] = 2700.
@@ -399,8 +399,8 @@ class global_parameters(ParameterContainer.ParameterContainer):
 
         self.params['weight_states_rp']    = 4.5  #3.
         self.params['weight_efference_rp'] = 4.5
-        self.params['delay_states_rp']    =  self.params['t_efference']
-        self.params['delay_efference_rp'] =  self.params['t_efference']
+        self.params['delay_states_rp']    =  self.params['t_efference']+self.params['t_delay']
+        self.params['delay_efference_rp'] =  self.params['t_efference']+self.params['t_delay']
         self.params['std_weight_states_rp']    = .5  
         self.params['std_weight_efference_rp'] = .5
         self.params['std_delay_states_rp']    = 5.
@@ -483,7 +483,7 @@ class global_parameters(ParameterContainer.ParameterContainer):
         self.params['params_dopa_bcpnn_RP']['tau_p']= 2000.
         self.params['params_dopa_bcpnn_RP']['tau_n']= 100.
         self.params['params_dopa_bcpnn_RP']['fmax']= self.params['rp_fmax']
-        self.params['params_dopa_bcpnn_RP']['gain_dopa']= 2. #1.
+        self.params['params_dopa_bcpnn_RP']['gain_dopa']= 1. #1.
         self.params['params_dopa_bcpnn_RP']['gain']= self.params['gain_rp']
 
         if not self.params['params_dopa_bcpnn_RP']['dopamine_modulated']:

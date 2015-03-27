@@ -93,7 +93,8 @@ startpd = 11
 p = len(fname)-1
 perf = {}
 for i in xrange(len(fname)):
-    perf[i] = np.zeros(params[1]['multi_n'], dtype=float)
+    #perf[i] = np.zeros(params[1]['multi_n'], dtype=float)
+    perf[i] = []
 j=0
 #for i in xrange(shift_rew, params1['n_iterations']):
 #    r1[j]=sum(rewa[:,i])
@@ -105,19 +106,19 @@ for f in xrange(len(fname)-1):
     j=0
     for i in xrange(params[f]['multi_n']):
         for q in xrange(start, params[f]['n_blocks']):
-            perf[f][j]+=sum(rew[f][i,q*params[f]['block_len']-6:q*params[f]['block_len']-1])
+            perf[f]= np.append(perf[f],rew[f][i,q*params[f]['block_len']-6:q*params[f]['block_len']-1])
         j+=1
 j=0
 for i in xrange(params[p]['multi_n']):
     for q in xrange(startpd, params[p]['n_blocks']):
-        perf[p][j]+=sum(rew[p][i,q*params[p]['block_len']-6:q*params[p]['block_len']-1])
+        perf[p] = np.append(perf[p], rew[p][i,q*params[p]['block_len']-6:q*params[p]['block_len']-1])
     j+=1
 
 
-for f in xrange(len(fname)-1):
-    perf[f] = perf[f]/((params[f]['n_blocks']-start)*5.)
-
-perf[p] = perf[p]/((params[p]['n_blocks']-startpd)*5.)
+#for f in xrange(len(fname)-1):
+#    perf[f] = perf[f]/((params[f]['n_blocks']-start)*5.)
+#
+#perf[p] = perf[p]/((params[p]['n_blocks']-startpd)*5.)
 
 
 fig = pl.figure()
@@ -132,13 +133,12 @@ for i in xrange(len(fname)):
         print 'F-TEST: ', stats.f_oneway(perf[i], perf[j])
         print '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~'
     print '\n'
-    norm = np.ones(len(perf[i]))*.3333
-    print 'F-TEST: ', stats.f_oneway(perf[i], norm)
+    print 'F-TEST: ', stats.f_oneway(perf[i], [.33333])
     print '+++++++++++++++++++++++++++++++'
 print '\n'
 print '\n'
 
-bp = ax.boxplot([v for v in perf.itervalues()])
+bp = ax.boxplot([perf[v] for v in perf.iterkeys()])
 
 
 

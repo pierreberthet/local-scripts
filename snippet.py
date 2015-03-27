@@ -12,11 +12,23 @@ fparam = path+'Test/Parameters/simulation_parameters.json'
 f = open(fparam, 'r')
 params = json.load(f)
 
+#pl.clf()
 #pp.pprint(params)
 if len(sys.argv)==4:
     start = int(sys.argv[2])
     end= int(sys.argv[3])
 
+si = 35 
+parms = {
+    'axes.labelsize': si,
+    'text.fontsize': si,
+    'legend.fontsize': si,
+    'xtick.labelsize': si,
+    'ytick.labelsize': si,
+    'text.usetex': False
+    #'figure.figsize': [6., 7.]
+}
+pl.rcParams.update(parms)
 
 params['figures_folder'] = "%sFigures" % params['folder_name']
 #color = ['b','g', 'r', 'c', 'm', 'y', 'k']
@@ -154,8 +166,8 @@ ax.set_xlim([start, end])
 lines= np.arange(params['t_init'],params['t_sim'], params['t_iteration'])
 ax.vlines(lines, [0], ymax,  color='0.55', linestyles='dashed')
 #pl.title(str(params['n_states'])+' states '+str(params['n_actions'])+' actions '+str(params['n_blocks']*params['block_len'])+ ' trials' )
-ax.set_ylabel("neuron ID")
-ax.set_xlabel("time "+ r"$ms$")
+ax.set_ylabel("Neuron ID")
+#ax.set_xlabel("Time [s]")
 #pl.legend()
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
@@ -166,23 +178,14 @@ ax.tick_params(axis='x', direction='out')
 ax.tick_params(axis='y', length=0)
 #ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
 ax.set_axisbelow(True)
-si = 25 
-
-parms = {
-    'axes.labelsize': si,
-    'text.fontsize': si,
-    'legend.fontsize': si,
-    'xtick.labelsize': si,
-    'ytick.labelsize': si,
-    'text.usetex': False
-    #'figure.figsize': [6., 7.]
-}
-pl.rcParams.update(parms)
+pl.xticks(pl.xticks()[0],[str(int(a/1000.)) for a in pl.xticks()[0]])
+#pl.xticks([])
 pl.tight_layout()
 pl.subplots_adjust(left = .06, bottom=.06, right=.98, top=.99)
-pl.savefig('snippet.png', bbox_inches='tight', dpi=1000)
+pl.savefig('snippet.png', bbox_inches='tight', dpi=800)
 pl.savefig('snippet.pdf', bbox_inches='tight', dpi=400)
 pl.savefig('snippet.tiff', bbox_inches='tight', dpi=400)
 pl.show()
 
-
+pl.clf()
+pl.close()

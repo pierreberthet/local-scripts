@@ -15,6 +15,18 @@ fparam = path+'Test/Parameters/simulation_parameters.json'
 f = open(fparam, 'r')
 params = json.load(f)
 
+si = 13 
+parms = {
+    'axes.labelsize': si,
+    'text.fontsize': si,
+    'legend.fontsize': si,
+    'xtick.labelsize': si,
+    'ytick.labelsize': si,
+    'text.usetex': False
+    #'figure.figsize': [6., 7.]
+}
+pl.rcParams.update(parms)
+
 #pp.pprint(params)
 recorder_type = 'spikes'
 cell = 'rew'
@@ -72,9 +84,12 @@ ax.get_xaxis().tick_bottom()
 ax.get_yaxis().tick_left()
 ax.tick_params(axis='x', direction='out')
 ax.tick_params(axis='y', length=0)
+pl.xticks(pl.xticks()[0],[str(int(a/1000.)) for a in pl.xticks()[0]])
+#pl.xticks([])
+pl.yticks(pl.yticks()[0],[str(int(a/10.)) for a in pl.yticks()[0]])
 #ax.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
 ax.set_axisbelow(True)
-pl.ylabel(r'spikes / 10$ms$ bin')
+pl.ylabel('Firing rate [Hz]')
 
 bx = fig.add_subplot(212)
 print cell
@@ -99,8 +114,9 @@ bx.tick_params(axis='x', direction='out')
 bx.tick_params(axis='y', length=0)
 #bx.grid(axis='y', color="0.9", linestyle='-', linewidth=1)
 bx.set_axisbelow(True)
-pl.xlabel(r'time in $ms$')
-pl.ylabel('dopaminergic neuron')
+pl.xlabel('Time [s]')
+pl.ylabel('Dopaminergic neuron')
+pl.xticks(pl.xticks()[0],[str(int(a/1000.)) for a in pl.xticks()[0]])
 pl.subplots_adjust(left = .04, bottom=.04, right=.97, top=.97)
 #figman = pl.get_current_fig_manager()
 #figman.frame.Maximize(True)

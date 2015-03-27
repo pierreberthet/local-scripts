@@ -21,6 +21,6 @@ scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/dopabg/simulati
 
 scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/temp/Test/Parameters/* Test/Parameters/.
 
-python multi_stats.py &
+python multi_stats_auto.py &
 
 
