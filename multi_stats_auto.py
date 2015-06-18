@@ -230,9 +230,9 @@ pl.savefig('perf.svg', bbox_inches='tight', dpi=600)
 #    pl.title('D2 run '+str(i))
 #    pl.plot(wd2[i])
 
-#pl.figure(330)
-#for i in xrange(params['multi_n']):
-#    pl.plot(perf[i], label=i)
+pl.figure(330)
+for i in xrange(params['multi_n']):
+    pl.plot(perf[i], label=i)
 pl.show()
 
 
