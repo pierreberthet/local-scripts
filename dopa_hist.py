@@ -15,7 +15,7 @@ data = np.loadtxt(params['spiketimes_folder']+cell+'_merged_'+recorder_type+'.da
 outcome = np.loadtxt(params['rewards_multi_fn']+'_0')
 
 
-spread = 6
+spread = 2
 x = len(outcome) * spread 
 tempd =np.sort(data[:,1])[params['t_init']:] 
 
@@ -33,7 +33,6 @@ routcome = np.zeros(x)
 for i in xrange(len(outcome)):
     routcome[spread*i:spread*i+spread] = outcome[i] * adapt
 
-rpe_smooth = sp.interp1d(np.arange(0,x),distrib, kind='cubic' )
 
 y=np.mean(distrib)
 #pl.title('dopamine dynamic')
@@ -41,13 +40,17 @@ pl.plot(routcome)
 pl.plot(distrib, c='k')
 pl.fill_between(np.arange(x), distrib, y, where=distrib>=y, facecolor='green', interpolate=True)
 pl.fill_between(np.arange(x), distrib, y, where=distrib<=y, facecolor='red', interpolate=True)
-pl.figure(322)
-points = np.linspace(0,x-1,5*x)
-smoothed_distrib = rpe_smooth(points)
-pl.plot(points, smoothed_distrib)
-y=np.mean(smoothed_distrib)
-pl.fill_between(points, smoothed_distrib, y, where=smoothed_distrib>=y, facecolor='green', interpolate=True)
-pl.fill_between(points, smoothed_distrib, y, where=smoothed_distrib<=y, facecolor='red', interpolate=True)
+
+
+
+#pl.figure(322)
+#rpe_smooth = sp.interp1d(np.arange(0,x),distrib, kind='cubic' )
+#points = np.linspace(0,x-1,5*x)
+#smoothed_distrib = rpe_smooth(points)
+#pl.plot(points, smoothed_distrib)
+#y=np.mean(smoothed_distrib)
+#pl.fill_between(points, smoothed_distrib, y, where=smoothed_distrib>=y, facecolor='green', interpolate=True)
+#pl.fill_between(points, smoothed_distrib, y, where=smoothed_distrib<=y, facecolor='red', interpolate=True)
 
 
 pl.figure(654)
