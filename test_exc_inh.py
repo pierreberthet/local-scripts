@@ -28,9 +28,9 @@ nest.Connect(inh, recorder)
 nest.Connect(tgt, recorder)
 nest.Connect(volt, tgt)
 
-w_exc = 20.
-w_inh = -5.
-w_noise = 5.
+w_exc = 10.
+w_inh = 0. #-5.
+w_noise = 5.0
 w_poisson = 5.
 
 rate_poisson = 4000.
@@ -45,9 +45,17 @@ nest.Connect(poisson, inh, 'one_to_one', {'weight':w_poisson, 'delay':1.})
 
 nest.SetStatus(noise, {'rate':rate_noise})
 
+conn = nest.GetConnections(exc, tgt)
 
 nest.Simulate(500.)
 nest.SetStatus(poisson, {'rate':rate_poisson})
+nest.Simulate(500.)
+
+print nest.GetStatus(conn)
+nest.SetStatus(conn, {'weight':0.})
+print nest.GetStatus(conn)
+
+nest.SetStatus(noise, {'rate':0.})
 nest.Simulate(500.)
 
 
@@ -58,6 +66,7 @@ volt_data= np.loadtxt(volt_file+"-"+str(volt[0])+"-0.dat")
 pl.figure(22)
 pl.subplot(211)
 pl.scatter(spike_data[:,1], spike_data[:,0], marker = "|")
+pl.xlim([0., max(spike_data[:,1])])
 pl.subplot(212)
 gids = np.unique(volt_data[:,0])
 for gid in gids:

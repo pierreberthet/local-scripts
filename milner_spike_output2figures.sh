@@ -14,6 +14,6 @@ scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/temp/Test/Param
 qpdfview fig*.pdf &
 #python MergeSpikefiles.py
 
-python fullplot.py
+python fullplot.py &
 
 
