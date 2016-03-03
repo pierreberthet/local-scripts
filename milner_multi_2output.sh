@@ -2,6 +2,7 @@
 
 rm Test/Multi/*
 rm Test/Parameters/*
+rm Test/Data/*
 
 rm simulation_parameters.*
 
@@ -17,6 +18,7 @@ qpdfview *.pdf &
 
 
 scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/temp/Test/Multi/* Test/Multi/.
+scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/temp/Test/Data/* Test/Data/.
 scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/dopabg/simulation_parameters.py .
 
 scp berthet@milner.pdc.kth.se:/cfs/milner/scratch/b/berthet/code/temp/Test/Parameters/* Test/Parameters/.
